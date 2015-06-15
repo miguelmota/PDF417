@@ -32,7 +32,6 @@ class BinaryBitmap {
     this.binarizer = binarizer;
   }
 
-
   /**
    * @return The width of the bitmap.
    */
@@ -58,7 +57,7 @@ class BinaryBitmap {
    * @return The array of bits for this row (true means black).
    */
   getBlackRow(y, row) {
-    return binarizer.getBlackRow(y, row);
+    return this.binarizer.getBlackRow(y, row);
   }
 
   /**
@@ -75,8 +74,12 @@ class BinaryBitmap {
     // 1. This work will never be done if the caller only installs 1D Reader objects, or if a
     //    1D Reader finds a barcode before the 2D Readers run.
     // 2. This work will only be done once even if the caller installs multiple 2D Readers.
+
+    console.log('hello');
     if (this.matrix == null) {
+    console.log('hello2 - hyb');
       this.matrix = this.binarizer.getBlackMatrix();
+    console.log('hello3');
     }
     return this.matrix;
   }
@@ -99,14 +102,14 @@ class BinaryBitmap {
    * @return A cropped version of this object.
    */
   crop(left, top, width, height) {
-    let newSource = binarizer.getLuminanceSource().crop(left, top, width, height);
-    return new BinaryBitmap(binarizer.createBinarizer(newSource));
+    let newSource = this.binarizer.getLuminanceSource().crop(left, top, width, height);
+    return new BinaryBitmap(this.binarizer.createBinarizer(newSource));
   }
 
   /**
    * @return Whether this bitmap supports counter-clockwise rotation.
    */
-  isRotateSupported = function() {
+  isRotateSupported() {
     return this.binarizer.getLuminanceSource().isRotateSupported();
   }
 
@@ -116,8 +119,8 @@ class BinaryBitmap {
    * @return A rotated version of this object.
    */
   rotateCounterClockwise() {
-    let newSource = binarizer.getLuminanceSource().rotateCounterClockwise();
-    return new BinaryBitmap(binarizer.createBinarizer(newSource));
+    let newSource = this.binarizer.getLuminanceSource().rotateCounterClockwise();
+    return new BinaryBitmap(this.binarizer.createBinarizer(newSource));
   }
 
 }

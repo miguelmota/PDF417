@@ -27,8 +27,6 @@ let ResultPoint = require('../../ResultPoint');
 let ReaderException = require('../../ReaderException');
 
 class MonochromeRectangleDetector {
-  this.image = undefined;
-
   constructor(image) {
     this.image = image;
   }
@@ -48,8 +46,8 @@ class MonochromeRectangleDetector {
     let width = this.image.getWidth();
     let halfHeight = height >> 1;
     let halfWidth = width >> 1;
-    let deltaY = Math.max(1, height / (MAX_MODULES << 3));
-    let deltaX = Math.max(1, width / (MAX_MODULES << 3));
+    let deltaY = Math.max(1, height / (MonochromeRectangleDetector.MAX_MODULES << 3));
+    let deltaX = Math.max(1, width / (MonochromeRectangleDetector.MAX_MODULES << 3));
 
     let top = 0;
     let bottom = height;
@@ -99,7 +97,7 @@ class MonochromeRectangleDetector {
          y < bottom && y >= top && x < right && x >= left;
          y += deltaY, x += deltaX) {
            let range;
-           if (deltaX == 0) {
+           if (deltaX === 0) {
              // horizontal slices, up and down
              range = this.blackWhiteRange(y, maxWhiteRun, left, right, true);
            } else {
@@ -111,7 +109,7 @@ class MonochromeRectangleDetector {
                throw new ReaderException('MonochromeRectangleDetector : findCornerFromCenter : range and lastRange null');
              }
              // lastRange was found
-             if (deltaX == 0) {
+             if (deltaX === 0) {
                let lastY = y - deltaY;
                if (lastRange[0] < centerX) {
                  if (lastRange[1] > centerX) {

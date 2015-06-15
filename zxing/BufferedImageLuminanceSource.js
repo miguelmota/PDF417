@@ -26,17 +26,10 @@ let LuminanceSource = require('./LuminanceSource');
  */
 
 class BufferedImageLuminanceSource extends LuminanceSource {
-  this.image = undefined;
-  this.left = undefined;
-  this.top = undefined;
-  this.rgbData = undefined;
-
   constructor(image, left, top, width, height) {
-    if ((width == 0) && (height == 0)) {
-      width = image.width;
-      height = image.height;
-    }
-    super(width, height);
+    super(width||image.width, height||image.width);
+    width = width || image.width;
+    height = width || image.height;
 
     let sourceWidth = image.width;
     let sourceHeight = image.height;
@@ -70,12 +63,12 @@ class BufferedImageLuminanceSource extends LuminanceSource {
       row = new Array(width);
     }
 
-    if (rgbData == null || rgbData.length < width) {
-      rgbData = new Array(width);
+    if (this.rgbData == null || this.rgbData.length < width) {
+      this.rgbData = new Array(width);
     }
-    this.getRGB(left, top + y, width, 1, rgbData, 0, image.width);
+    this.getRGB(this.left, this.top + y, width, 1, this.rgbData, 0, this.image.width);
     for (let x = 0; x < width; x++) {
-      let pixel = rgbData[x];
+      let pixel = this.rgbData[x];
       let luminance = (306 * ((pixel >> 16) & 0xFF) +
           601 * ((pixel >> 8) & 0xFF) +
           117 * (pixel & 0xFF)) >> 10;
@@ -91,7 +84,7 @@ class BufferedImageLuminanceSource extends LuminanceSource {
     let matrix = new Array(area);
 
     let rgb = new Array(area);
-    this.getRGB(left, top, width, height, rgb, 0, image.width);
+    this.getRGB(this.left, this.top, width, height, rgb, 0, this.image.width);
     for (let y = 0; y < height; y++) {
       let offset = y * width;
       for (let x = 0; x < width; x++) {
@@ -110,7 +103,7 @@ class BufferedImageLuminanceSource extends LuminanceSource {
   }
 
   crop(left, top, width, height) {
-    return new BufferedImageLuminanceSource(this.image, left, top, width, height);
+    return new BufferedImageLuminanceSource(this.image, left, this.top, width, height);
   }
 
   // Can't run AffineTransforms on images of unknown format.

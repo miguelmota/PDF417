@@ -14,125 +14,124 @@
  * limitations under the License.
  */
 
-function HashTable() {
-  var _arr;
+let ArrayList = require('./ArrayList');
 
-  this.isEmpty = function() {
-    return this.getSize() == 0;
-  }.bind(this);
+class HashTable {
+  constructor(siz) {
+    if (!siz) siz = 0;
+    this._arr = new Array(siz);
+  }
 
-  this.getSize = function() {
+  isEmpty() {
+    return this.getSize() === 0;
+  }
+
+  getSize() {
     return this._arr.length;
-  }.bind(this);
+  }
 
-  this.getIndexOf = function(key) {
-    for (var i in this._arr) {
-      if (this._arr[i][0] == key) {
+  getIndexOf(key) {
+    for (let i in this._arr) {
+      if (this._arr[i][0] === key) {
         return i;
       }
     }
-    return undefined;
-  }.bind(this);
+  }
 
-  this.getValueByIndex = function(index) {
+  getValueByIndex(index) {
     return this._arr[index][1];
-  }.bind(this);
+  }
 
-  this.getKeyByIndex = function(index) {
+  getKeyByIndex(index) {
     return this._arr[index][0];
-  }.bind(this);
+  }
 
-  this.HashTable = function(siz) {
-    siz = siz || 0;
-    this._arr = new Array(siz);
-  }.bind(this);
-
-  this.Add = function(key, value) {
-    var ta = new Array(2);
+  Add(key, value) {
+    let ta = new Array(2);
     ta[0] = key;
     ta[1] = value;
     this._arr[this._arr.length] = ta;
-  }.bind(this);
+  }
 
-  this._put = function(k, v) {
+  _put(k, v) {
     this.Add(k,v);
-  }.bind(this);
+  }
 
-  this.ContainsKey = function(key) {
-    //for (var i:int=0;i<this._arr.length;i++)
-    for (var i in this._arr) {
-      if (this._arr[i][0] == key) {
+  ContainsKey(key) {
+    //for (let i:int=0;i<this._arr.length;i++)
+    for (let i in this._arr) {
+      if (this._arr[i][0] === key) {
         return true;
       }
     }
     return false;
-  }.bind(this);
+  }
 
-  this.getValuesByKey = function(key) {
-    var al = new ArrayList();
-    //for (var i:int=0;i<this._arr.length;i++)
-    for (var i in this._arr) {
-      if (this._arr[i][0] == key) {
+  getValuesByKey(key) {
+    let al = new ArrayList();
+    //for (let i:int=0;i<this._arr.length;i++)
+    for (let i in this._arr) {
+      if (this._arr[i][0] === key) {
         al.Add(this._arr[i][1]);
       }
     }
     return al;
-  }.bind(this);
+  }
 
-  this._get = function(key) {
+  _get(key) {
     return this.getValueByKey(key);
-  }.bind(this);
+  }
 
-  this.getValueByKey = function(key) {
-    var al = new ArrayList();
-    //for (var i:int=0;i<this._arr.length;i++)
-    for (var i in this._arr) {
-      if (this._arr[i][0] == key) {
+  getValueByKey(key) {
+    let al = new ArrayList();
+    //for (let i:int=0;i<this._arr.length;i++)
+    for (let i in this._arr) {
+      if (this._arr[i][0] === key) {
         return this._arr[i][1];
       }
     }
     return null;
-  }.bind(this);
+  }
 
-  this.setValue = function(key, value) {
-    //for (var i:int=0;i<this._arr.length;i++)
-    for (var i in this._arr) {
-      if (this._arr[i][0] == key) {
+  setValue(key, value) {
+    //for (let i:int=0;i<this._arr.length;i++)
+    for (let i in this._arr) {
+      if (this._arr[i][0] === key) {
         this._arr[i][1] = value;
         return;
       }
     }
-  }.bind(this);
+  }
 
-  this.getKeyByValue = function(value) {
-    //for (var i:int=0;i<this._arr.length;i++)
-    for (var i in this._arr) {
-      if (this._arr[i][1] == value) {
+  getKeyByValue(value) {
+    //for (let i:int=0;i<this._arr.length;i++)
+    for (let i in this._arr) {
+      if (this._arr[i][1] === value) {
         return this._arr[i][0];
       }
     }
     return -1;
-  }.bind(this);
+  }
 
-  this.containsKey = function(key) {
-    //for (var i:int=0;i<this._arr.length;i++)
-    for (var i in this._arr) {
-      if (this._arr[i][0] == key) {
+  containsKey(key) {
+    //for (let i:int=0;i<this._arr.length;i++)
+    for (let i in this._arr) {
+      if (this._arr[i][0] === key) {
         return true;
       }
 
     }
     return false;
-  }.bind(this);
+  }
 
-  this.keys = function() {
-    var result = new Array(this._arr.length);
-    //for (var i:int=0;i<this._arr.length;i++)
-    for (var i in this._arr) {
+  keys() {
+    let result = new Array(this._arr.length);
+    //for (let i:int=0;i<this._arr.length;i++)
+    for (let i in this._arr) {
       result[i] = this._arr[i][0];
     }
     return result;
-  }.bind(this);
+  }
 
 }
 

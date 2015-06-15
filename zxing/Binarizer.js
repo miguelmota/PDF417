@@ -29,7 +29,7 @@ let IllegalArgumentException = require('./common/flexdatatypes/IllegalArgumentEx
 
 class Binarizer {
 
-  construct() {
+  constructor(source) {
     if (source == null) {
         throw new IllegalArgumentException("Source must be non-null.");
     }
@@ -67,6 +67,7 @@ class Binarizer {
    * @return The 2D array of bits for the image (true means black).
    */
   getBlackMatrix() {
+    console.log('fooff')
     return null;
   }
 

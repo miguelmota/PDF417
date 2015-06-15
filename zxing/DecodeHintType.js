@@ -25,8 +25,6 @@
  */
 
 class DecodeHintType {
-  this.DHtype = undefined;
-
   constructor(aType) {
     this.DHtype = aType;
   }
@@ -35,46 +33,46 @@ class DecodeHintType {
 /**
  * Unspecified, application-specific hint. Maps to an unspecified {@link Object}.
  */
-DecodeHintType.OTHER = new DecodeHintType("OTHER");
+DecodeHintType.OTHER = new DecodeHintType('OTHER');
 
 /**
  * Image is a pure monochrome image of a barcode. Doesn't matter what it maps to;
  * use {@link Boolean#TRUE}.
  */
-DecodeHintType.PURE_BARCODE= new DecodeHintType("PURE_BARCODE");
+DecodeHintType.PURE_BARCODE= new DecodeHintType('PURE_BARCODE');
 
 /**
  *
  * Image is known to be of one of a few possible formats.
  * Maps to a {@link java.util.Vector} of {@link BarcodeFormat}s.
  */
-DecodeHintType.POSSIBLE_FORMATS = new DecodeHintType("POSSIBLE_FORMATS");
+DecodeHintType.POSSIBLE_FORMATS = new DecodeHintType('POSSIBLE_FORMATS');
 
 /**
  * Spend more time to try to find a barcode; optimize for accuracy, not speed.
  * Doesn't matter what it maps to; use {@link Boolean#TRUE}.
  */
-DecodeHintType.TRY_HARDER = new DecodeHintType("TRY_HARDER");
+DecodeHintType.TRY_HARDER = new DecodeHintType('TRY_HARDER');
 
 /**
  * Specifies what character encoding to use when decoding, where applicable (type String)
  */
-DecodeHintType.CHARACTER_SET = new DecodeHintType("CHARACTER_SET");
+DecodeHintType.CHARACTER_SET = new DecodeHintType('CHARACTER_SET');
 
 /**
  * Allowed lengths of encoded data -- reject anything else. Maps to an int[].
  */
-DecodeHintType.ALLOWED_LENGTHS = new DecodeHintType("ALLOWED_LENGTHS");
+DecodeHintType.ALLOWED_LENGTHS = new DecodeHintType('ALLOWED_LENGTHS');
 
 /**
  * Assume Code 39 codes employ a check digit. Maps to {@link Boolean}.
  */
-DecodeHintType.ASSUME_CODE_39_CHECK_DIGIT = new DecodeHintType("ASSUME_CODE_39_CHECK_DIGIT");
+DecodeHintType.ASSUME_CODE_39_CHECK_DIGIT = new DecodeHintType('ASSUME_CODE_39_CHECK_DIGIT');
 
 /**
  * The caller needs to be notified via callback when a possible {@link ResultPoint}
  * is found. Maps to a {@link ResultPointCallback}.
  */
-DecodeHintType.NEED_RESULT_POINT_CALLBACK = new DecodeHintType("NEED_RESULT_POINT_CALLBACK");
+DecodeHintType.NEED_RESULT_POINT_CALLBACK = new DecodeHintType('NEED_RESULT_POINT_CALLBACK');
 
 module.exports = DecodeHintType;

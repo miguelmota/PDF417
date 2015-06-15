@@ -21,17 +21,19 @@
  *
  * @author Sean Owen
  */
-function DetectorResult(bits, points) {
-  this.bits = bits;
-  this.points = points;
+class DetectorResult {
+  constructor(bits, points) {
+    this.bits = bits;
+    this.points = points;
+  }
 
-  this.getBits = function() {
+  getBits() {
     return this.bits;
-  }.bind(this);
+  }
 
-  this.getPoints = function() {
+  getPoints() {
     return this.points;
-  }.bind(this);
+  }
 }
 
-module.exports = DecoderResult;
+module.exports = DetectorResult;

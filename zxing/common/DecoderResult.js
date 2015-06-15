@@ -22,33 +22,36 @@
  * @author Sean Owen
  */
 
-var IllegalArgumentException = require('./IllegalArgumentException');
+let IllegalArgumentException = require('./flexdatatypes/IllegalArgumentException');
 
-function DecoderResult(rawBytes, text, byteSegments, ecLevel) {
-  if (rawBytes == null && text == null) {
-      throw new IllegalArgumentException("common : DecoderResult : Constructor : rawBytes array contains no data and text == null");
+class DecoderResult {
+
+  constructor(rawBytes, text, byteSegments, ecLevel) {
+    if (rawBytes == null && text == null) {
+        throw new IllegalArgumentException("common : DecoderResult : Constructor : rawBytes array contains no data and text == null");
+    }
+
+    this.rawBytes = rawBytes;
+    this.text = text;
+    this.byteSegments = byteSegments;
+    this.ecLevel = ecLevel;
   }
 
-  this.rawBytes = rawBytes;
-  this.text = text;
-  this.byteSegments = byteSegments;
-  this.ecLevel = ecLevel;
-
-  this.getRawBytes = function() {
+  getRawBytes() {
     return this.rawBytes;
-  }.bind(this);
+  }
 
-  this.getText = function() {
-    return text;
-  }.bind(this);
+  getText() {
+    return this.text;
+  }
 
-  this.getByteSegments = function() {
-    return byteSegments;
-  }.bind(this);
+  getByteSegments() {
+    return this.byteSegments;
+  }
 
-  this.getECLevel = function() {
-    return ecLevel;
-  }.bind(this);
+  getECLevel() {
+    return this.ecLevel;
+  }
 }
 
 module.exports = DecoderResult;

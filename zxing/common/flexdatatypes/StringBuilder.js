@@ -14,76 +14,21 @@
  * limitations under the License.
  */
 
-var ReaderException = require('../ReaderException');
+let ReaderException = require('../../ReaderException');
 
-function StringBuilder(ignore) {
-  ignore = ignore || 0;
-  var _string = '';
+class StringBuilder {
+  constructor(ignore) {
+    if (!ignore) ignore = 0;
+    this._string = '';
+  }
 
-  this.charAt = function(index) {
+  charAt(index) {
     return this._string.charAt(index);
-  }.bind(this);
+  }
 
-  this.setCharAt = function(index, char) {
-    var temp = this._string.split("");
-    temp[index] = char.charAt(0);
-    this._string = temp.join("");
-  }.bind(this);
-
-  this.setLength = function(l) {
-    if (l == 0) {
-      this._string = "";
-    } else {
-      this._string = this._string.substr(0,l);
-    }
-  }.bind(this);
-
-  this.Append = function(o, startIndex, count) {
-    startIndex = typeof startIndex === 'undefined' ? -1 : startIndex;
-    count = typeof count === 'undefined' ? -1 : count;
-
-    if (startIndex == -1) {
-      if (Array.isArray(o)) {
-        this._string = this._string + (o).join("");
-      } else if (typeof o === 'string') {
-        this._string = this._string + o;
-      } else {
-        this._string = this._string + o.toString();
-      }
-    } else if (count == -1) {
-      this._string = this._string + (o.toString()).substr(startIndex);
-    } else {
-      this._string = this._string + (o.toString()).substr(startIndex,count);
-    }
-  }.bind(this);
-
-  this.toString = function() {
-    return this._string;
-  }.bind(this);
-
-  this.getLength = function() {
-    return this._string.length;
-  }.bind(this);
-
-  this.setLength = function(size) {
-    if (size == 0) {
-      this._string = '';
-    } else {
-      throw new ReaderException("size can ony be set to 0");
-    }
-  }.bind(this);
-
-  this.Insert = function(pos, o) {
-    if (pos == 0) {
-      this._string = o.toString() + this._string;
-    } else {
-      throw new ReaderException('pos not supported yet');
-    }
-  }.bind(this);
-
-  this.Remove = function(startIndex, length) {
-    var leftPart = "";
-    var rightPart = "";
+  setCharAt(index, char) {
+    let leftPart = '';
+    let rightPart = '';
     if (startIndex > 0) {
       leftPart = this._string.substring(0,startIndex);
     }
@@ -91,37 +36,37 @@ function StringBuilder(ignore) {
       rightPart = this._string.substr(startIndex+length);
     }
     this._string = leftPart + rightPart;
-  }.bind(this);
+  }
 
-  this.toString = function() {
+  toString() {
     return this._string;
-  }.bind(this);
+  }
 
-  this.toHexString = function() {
-    var r = "";
-    var e = this._string.length;
-    var c = 0;
-    var h;
+  toHexString() {
+    let r = '';
+    let e = this._string.length;
+    let c = 0;
+    let h;
     while (c < e) {
       h = this._string.charCodeAt(c++).toString(16);
       while(h.length < 3) {
-        h = "0"+h;
+        h = '0'+h;
       }
       r += h;
     }
     return r;
-  }.bind(this);
+  }
 
-  this.deleteCharAt = function(index) {
-    var temp = this._string.split("");
-    var result = "";
-    for(var i = 0; i < temp.length; i++) {
+  deleteCharAt(index) {
+    let temp = this._string.split('');
+    let result = '';
+    for (let i = 0; i < temp.length; i++) {
       if (i != index) {
         result = result + temp[i];
       }
     }
     this._string = result;
-  }.bind(this);
+  }
 }
 
 module.exports = StringBuilder;

@@ -22,9 +22,9 @@
  */
 
 let ReaderException = require('../../ReaderException');
-let BitMatrix = require('../../common.BitMatrix');
+let BitMatrix = require('../../common/BitMatrix');
 let BitMatrixParser = require('./BitMatrixParser');
-let DecoderResult = require('../../common.DecoderResult');
+let DecoderResult = require('../../common/DecoderResult');
 
 class Decoder {
   //private ReedSolomonDecoder rsDecoder;

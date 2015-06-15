@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-let IllegalArgumentException = require('./flexdatatypes/IllegalArgumentException');
+let IllegalArgumentException = require('./common/flexdatatypes/IllegalArgumentException');
 let HashTable = require('./common/flexdatatypes/HashTable');
 
 class ResultMetadataType {
-  this.name = undefined;
-
-  constructor(name='') {
+  constructor(name) {
+    if (!name) name ='';
     this.name = name;
   }
 
@@ -85,7 +84,7 @@ ResultMetadataType.POSSIBLE_COUNTRY = new ResultMetadataType('POSSIBLE_COUNTRY')
 ResultMetadataType.VALUES = new HashTable();
 
 ResultMetadataType.valueOf = function(name) {
-  if (name == null || name.length == 0) {
+  if (name == null || name.length === 0) {
     throw new IllegalArgumentException();
   }
 

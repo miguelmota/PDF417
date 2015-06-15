@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  * Copyright 2007 ZXing authors
  *
@@ -24,12 +26,10 @@ let HashTable = require('./common/flexdatatypes/HashTable');
 let IllegalArgumentException  = require('./common/flexdatatypes/IllegalArgumentException');
 
 class BarcodeFormat {
-
   constructor(name) {
     this._name = name;
     BarcodeFormat.VALUES._put(name, this);
   }
-
 
   toString() {
     return this._name;

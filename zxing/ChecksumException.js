@@ -24,9 +24,8 @@
 let ReaderException = require('./ReaderException');
 
 class ChecksumException extends ReaderException {
-
   constructor() {
-    // do nothing
+
   }
 
 }

@@ -16,29 +16,34 @@
 
 let BarcodeFormat = require('./BarcodeFormat');
 let ByteMatrix = require('./common/ByteMatrix');
-let HashTable = require('common/flexdatatypes/HashTable');
-let IllegalArgumentException = require('common/flexdatatypes/IllegalArgumentException');
+let HashTable = require('./common/flexdatatypes/HashTable');
+let IllegalArgumentException = require('./common/flexdatatypes/IllegalArgumentException');
 let PDF417Writer = require('./pdf417/encoder/PDF417Writer');
+let Writer = require('./Writer');
 
-public class MultiFormatWriter extends Writer {
-  encode(contents, format=null, width=0, height=0, hints=null) {
+class MultiFormatWriter extends Writer {
+  encode(contents, format, width, height, hints) {
+    if (!format) format = null;
+    if (!width) width = 0;
+    if (!height) height = 0;
+    if (!hints) hints = null;
     let writer;
-    if (format == BarcodeFormat.EAN_8) {
-      writer = new EAN8Writer();
-    } else if (format == BarcodeFormat.EAN_13) {
-      writer = new EAN13Writer();
-    } else if (format == BarcodeFormat.UPC_A) {
-      writer = new UPCAWriter();
-    } else if (format == BarcodeFormat.CODE_39) {
+    if (format === BarcodeFormat.EAN_8) {
+      //writer = new EAN8Writer();
+    } else if (format === BarcodeFormat.EAN_13) {
+      //writer = new EAN13Writer();
+    } else if (format === BarcodeFormat.UPC_A) {
+      //writer = new UPCAWriter();
+    } else if (format === BarcodeFormat.CODE_39) {
       writer = new Code39Writer();
-    } else if (format == BarcodeFormat.CODE_128) {
+    //} else if (format == BarcodeFormat.CODE_128) {
       writer = new Code128Writer();
-    } else if (format == BarcodeFormat.ITF) {
+    //} else if (format == BarcodeFormat.ITF) {
       writer = new ITFWriter();
-    } else if (format == BarcodeFormat.PDF417) {
+    } else if (format === BarcodeFormat.PDF417) {
       writer = new PDF417Writer();
-    } else if (format == BarcodeFormat.QR_CODE) {
-      writer = new QRCodeWriter();
+    //} else if (format == BarcodeFormat.QR_CODE) {
+      //writer = new QRCodeWriter();
     } else {
       throw new IllegalArgumentException('No encoder available for format ' + format);
     }

@@ -26,8 +26,6 @@ class LuminanceSource {
  *
  * @author dswitkin@google.com (Daniel Switkin)
  */
-  this.width = undefined;
-  this.height = undefined;
 
   constructor(width, height) {
     this.width = width;

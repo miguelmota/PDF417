@@ -29,36 +29,11 @@
  *
  */
 
-var NotFoundException = require('../NotFoundException');
-var ReaderException = require('../ReaderException');
-var BitMatrix = require('./BitMatrix');
+let NotFoundException = require('../NotFoundException');
+let ReaderException = require('../ReaderException');
+let BitMatrix = require('./BitMatrix');
 
-function GridSampler() {
-  var gridSampler;
-
-  /**
-   * Sets the implementation of {@link GridSampler} used by the library. One global
-   * instance is stored, which may sound problematic. But, the implementation provided
-   * ought to be appropriate for the entire platform, and all uses of this library
-   * in the whole lifetime of the JVM. For instance, an Android activity can swap in
-   * an implementation that takes advantage of native platform libraries.
-   *
-   * @param newGridSampler The platform-specific object to install.
-   */
-  this.setGridSampler = function(newGridSampler) {
-    if (newGridSampler == null) {
-      throw new IllegalArgumentException("common : GridSampler : setGridSampler");;
-    }
-    gridSampler = newGridSampler;
-  }.bind(this);
-
-  /**
-   * @return the current implementation of {@link GridSampler}
-   */
-  this.getGridSamplerInstance = function() {
-    return gridSampler;
-  }.bind(this);
-
+class GridSampler {
   /**
    * <p>Samples an image for a square matrix of bits of the given dimension. This is used to extract
    * the black/white modules of a 2D barcode like a QR Code found in an image. Because this barcode
@@ -83,24 +58,24 @@ function GridSampler() {
    *   by the given points is invalid or results in sampling outside the image boundaries
    */
 
-  this.sampleGrid = function(image, dimensionX, dimensionY, transform) {
+  sampleGrid(image, dimensionX, dimensionY, transform) {
     // originally in DefaultGridSampler
     if (dimensionX <= 0 || dimensionY <= 0) {
       throw NotFoundException.getNotFoundInstance();
     }
-    var bits = new BitMatrix(dimensionX, dimensionY);
-    var points = new Array(dimensionX << 1);
-    for (var y = 0; y < dimensionY; y++) {
-      var max = points.length;
-      var iValue = Number(y + 0.5);
-      for (var x = 0; x < max; x += 2) {
+    let bits = new BitMatrix(dimensionX, dimensionY);
+    let points = new Array(dimensionX << 1);
+    for (let y = 0; y < dimensionY; y++) {
+      let max = points.length;
+      let iValue = Number(y + 0.5);
+      for (let x = 0; x < max; x += 2) {
         points[x] = Number((x >> 1) + 0.5);
         points[x + 1] = iValue;
       }
       transform.transformPoints(points);
       // Quick check to see if points transformed to something inside the image;
       // sufficient to check the endpoints
-      checkAndNudgePoints(image, points);
+      this.checkAndNudgePoints(image, points);
       try {
         for (x = 0; x < max; x += 2) {
           if (image._get(int(points[x]), int( points[x + 1]))) {
@@ -120,10 +95,10 @@ function GridSampler() {
       }
     }
     return bits;
-  }.bind(this);
+  }
 
-  this.sampleGrid2 = function(image,
-                              dimensionX,
+  sampleGrid2 (image,
+  dimensionX,
   dimensionY,
   p1ToX,
   p1ToY,
@@ -134,11 +109,11 @@ function GridSampler() {
   p2FromX, p2FromY,
   p3FromX, p3FromY,
   p4FromX, p4FromY) {
-    var transform = PerspectiveTransform.quadrilateralToQuadrilateral(
+    let transform = PerspectiveTransform.quadrilateralToQuadrilateral(
       p1ToX, p1ToY, p2ToX, p2ToY, p3ToX, p3ToY, p4ToX, p4ToY,
       p1FromX, p1FromY, p2FromX, p2FromY, p3FromX, p3FromY, p4FromX, p4FromY);
-      return sampleGrid(image, dimensionX, dimensionY, transform);
-  }.bind(this);
+      return this.sampleGrid(image, dimensionX, dimensionY, transform);
+  }
 
   /**
    * <p>Checks a set of points that have been transformed to sample points on an image against
@@ -155,14 +130,14 @@ function GridSampler() {
    * @param points actual points in x1,y1,...,xn,yn form
    * @throws ReaderException if an endpoint is lies outside the image boundaries
    */
-  this.checkAndNudgePoints = function(image, points) {
-    var width = image.getWidth();
-    var height = image.getHeight();
+  checkAndNudgePoints(image, points) {
+    let width = image.getWidth();
+    let height = image.getHeight();
     // Check and nudge points from start until we see some that are OK:
-    var nudged = true;
-    for (var offset = 0; offset < points.length && nudged; offset += 2) {
-      var x = parseInt(points[offset]);
-      var y = parseInt(points[offset + 1]);
+    let nudged = true;
+    for (let offset = 0; offset < points.length && nudged; offset += 2) {
+      let x = parseInt(points[offset]);
+      let y = parseInt(points[offset + 1]);
       if (x < -1 || x > width || y < -1 || y > height) {
         throw new ReaderException("common : GridSampler : checkAndNudgePoints : point out of range ("+x+""+y+") max:"+width+" - "+height);
       }
@@ -183,9 +158,9 @@ function GridSampler() {
     }
     // Check and nudge points from end:
     nudged = true;
-    for (var offset1 = points.length - 2; offset >= 0 && nudged; offset -= 2) {
-      var x1 = int(points[offset1]);
-      var y1 = int(points[offset1 + 1]);
+    for (let offset1 = points.length - 2; offset >= 0 && nudged; offset -= 2) {
+      let x1 = int(points[offset1]);
+      let y1 = int(points[offset1 + 1]);
       if (x1 < -1 || x1 > width || y1 < -1 || y1 > height) {
         throw new ReaderException("common : GridSampler : checkAndNudgePoints : out of bounds");
       }
@@ -204,7 +179,33 @@ function GridSampler() {
         nudged = true;
       }
     }
-  }.bind(this);
+  }
 }
+
+GridSampler.gridSampler = new GridSampler();
+
+/**
+ * Sets the implementation of {@link GridSampler} used by the library. One global
+ * instance is stored, which may sound problematic. But, the implementation provided
+ * ought to be appropriate for the entire platform, and all uses of this library
+ * in the whole lifetime of the JVM. For instance, an Android activity can swap in
+ * an implementation that takes advantage of native platform libraries.
+ *
+ * @param newGridSampler The platform-specific object to install.
+ */
+GridSampler.setGridSampler = function(newGridSampler) {
+  if (newGridSampler == null) {
+    throw new IllegalArgumentException("common : GridSampler : setGridSampler");;
+  }
+  GridSampler.gridSampler = newGridSampler;
+};
+
+
+/**
+ * @return the current implementation of {@link GridSampler}
+ */
+GridSampler.getGridSamplerInstance = function() {
+  return GridSampler.gridSampler;
+};
 
 module.exports = GridSampler;

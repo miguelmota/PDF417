@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-function IllegalArgumentException extends Error {
-  public function IllegalArgumentException(message:String="") {
-    super("IllegalArgumentException"+message);
+class IllegalArgumentException extends Error {
+  constructor(message) {
+    if (!message) message = '';
+    super('IllegalArgumentException' + message);
   }
 }

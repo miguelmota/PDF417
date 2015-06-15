@@ -24,11 +24,9 @@
 let ReaderException = require('./ReaderException');
 
 class NotFoundException extends ReaderException {
-
   constructor() {
     // do nothing
   }
-
 }
 
 NotFoundException.instance = new NotFoundException();

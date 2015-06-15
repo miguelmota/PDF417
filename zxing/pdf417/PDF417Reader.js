@@ -27,12 +27,12 @@ var Reader = require('../Reader');
 var ReaderException = require('../ReaderException');
 var Result = require('../Result');
 var ResultPoint = require('../ResultPoint');
-var BitMatrix = require('../BitMatrix');
-var DecoderResult = require('../DecoderResult');
-var DetectorResult = require('../DetectorResult');
+var BitMatrix = require('../common/BitMatrix');
+var DecoderResult = require('../common/DecoderResult');
+var DetectorResult = require('../common/DetectorResult');
 var Decoder = require('./decoder/Decoder');
 var Detector = require('./detector/Detector');
-var HashTable = require('../common/HashTable');
+var HashTable = require('../common/flexdatatypes/HashTable');
 var NotFoundException = require('../NotFoundException');
 
 /**
@@ -40,7 +40,9 @@ var NotFoundException = require('../NotFoundException');
  * extend Reader
  */
 class PDF417Reader {
-  this.decoder = new Decoder();
+  constructor() {
+    this.decoder = new Decoder();
+  }
 
   /**
    * Locates and decodes a PDF417 code in an image.
@@ -62,11 +64,12 @@ class PDF417Reader {
     var decoderResult;
     var points;
     if (hints != null && hints.ContainsKey(DecodeHintType.PURE_BARCODE)) {
-      var bits = extractPureBits(image.getBlackMatrix());
+      var bits = this.extractPureBits(image.getBlackMatrix());
       decoderResult = decoder.decode(bits);
       points = PDF417Reader.NO_POINTS;
     } else {
       var detectorResult = new Detector(image).detect();
+    console.log('foob')
       decoderResult = decoder.decode(detectorResult.getBits());
       points = detectorResult.getPoints();
     }
@@ -83,7 +86,6 @@ PDF417Reader.NO_POINTS = new Array();
  * case.
  */
 PDF417Reader.extractPureBits = function(image) {
-
   var leftTopBlack = image.getTopLeftOnBit();
   var rightBottomBlack = image.getBottomRightOnBit();
   if (leftTopBlack == null || rightBottomBlack == null) {
@@ -106,7 +108,7 @@ PDF417Reader.extractPureBits = function(image) {
   // Push in the "border" by half the module width so that we start
   // sampling in the middle of the module. Just in case the image is a
   // little off, this will help recover.
-  var nudge:int = moduleSize >> 1;
+  var nudge = moduleSize >> 1;
   top += nudge;
   left += nudge;
 

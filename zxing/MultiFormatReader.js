@@ -15,9 +15,11 @@
  */
 
 let ArrayList = require('./common/flexdatatypes/ArrayList');
-let HashTable = require('common/flexdatatypes/HashTable');
+let HashTable = require('./common/flexdatatypes/HashTable');
 let PDF417Reader = require('./pdf417/PDF417Reader');
 let Reader = require('./Reader');
+var DecodeHintType = require('./DecodeHintType');
+var BarcodeFormat = require('./BarcodeFormat');
 
 /**
  * MultiFormatReader is a convenience class and the main entry point into the library for most uses.
@@ -27,11 +29,7 @@ let Reader = require('./Reader');
  * @author Sean Owen
  * @author dswitkin@google.com (Daniel Switkin)
  */
-class MultiFormatReader implements Reader {
-
-  this.hints = undefined;
-  this.readers = undefined;
-
+class MultiFormatReader extends Reader {
   /**
    * Decode an image using the hints provided. Does not honor existing state.
    *
@@ -40,8 +38,8 @@ class MultiFormatReader implements Reader {
    * @return The contents of the image
    * @throws ReaderException Any errors which occurred
    */
-  decode(image, hints=null) {
-    setHints(hints);
+  decode(image, hints) {
+    this.setHints(hints||null);
     return this.decodeInternal(image);
   }
 
@@ -98,7 +96,7 @@ class MultiFormatReader implements Reader {
       }
 
       if (formats.indexOf(BarcodeFormat.PDF417) != -1) {
-        readers.addElement(new PDF417Reader());
+        this.readers.addElement(new PDF417Reader());
       }
 
       if (formats.indexOf(BarcodeFormat.AZTEC) != -1) {
@@ -120,27 +118,25 @@ class MultiFormatReader implements Reader {
       }
     }
 
-    if (readers.Count == 0)
-      {
+    if (this.readers.Count == 0) {
         if (!tryHarder) {
           //let reader:MultiFormatOneDReader = new MultiFormatOneDReader(hints);
           //readers.Add(reader);
         }
-        readers.Add(new QRCodeReader());
-        readers.Add(new DataMatrixReader());
+        this.readers.Add(new QRCodeReader());
+        this.readers.Add(new DataMatrixReader());
         //readers.Add(new AztecReader());
-        readers.Add(new PDF417Reader());
-        readers.Add(new MaxiCodeReader());
+        this.readers.Add(new PDF417Reader());
+        this.readers.Add(new MaxiCodeReader());
 
         if (tryHarder) {
           //readers.Add(new MultiFormatOneDReader(hints));
         }
       }
-
   }
 
   reset() {
-    let size = readers.size();
+    let size = this.readers.size();
     for (let i = 0; i < size; i++) {
       let reader = Reader(readers.elementAt(i));
       reader.reset();
@@ -148,9 +144,10 @@ class MultiFormatReader implements Reader {
   }
 
   decodeInternal(image) {
-    let size = readers.Count;
+    let size = this.readers.Count;
+    console.log('hreaders', this.readers)
     for (let i = 0; i < size; i++) {
-      let reader:Reader = readers.getObjectByIndex(i);
+      let reader = this.readers.getObjectByIndex(i);
       try {
         try {
           let res = reader.decode(image, hints);

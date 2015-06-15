@@ -25,17 +25,15 @@
 let ReaderException = require('./ReaderException');
 
 class FormatException extends ReaderException {
-
-
   constructor() {
-    // do nothing
+
   }
 }
 
 FormatException.instance = new FormatException();
 
-FormatException.getFormatInstance = function {
+FormatException.getFormatInstance = function() {
   return FormatException.instance;
 };
 
-module.exports = FormatException:
+module.exports = FormatException;

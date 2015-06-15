@@ -30,10 +30,12 @@ class Writer {
    * @param hints Additional parameters to supply to the encoder
    * @return The generated barcode as a Matrix of unsigned bytes (0 == black, 255 == white)
    */
-  encode(contents, format=null, width=0, height=0, hints=null) {
-
+  encode(contents, format, width, height, hints) {
+    if (!format) format = null;
+    if (!width) width = 0;
+    if (!height) height = 0;
+    if (!hints) hints = null;
   }
-
 }
 
 module.exports = Writer;

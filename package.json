@@ -1,0 +1,22 @@
+{
+  "name": "pdf417",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miguelmota/PDF417.git"
+  },
+  "author": "Miguel Mota <hello@miguelmota.com> (http://www.miguelmota.com/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/miguelmota/PDF417/issues"
+  },
+  "homepage": "https://github.com/miguelmota/PDF417#readme",
+  "dependencies": {
+    "get-pixels": "^3.2.2"
+  }
+}

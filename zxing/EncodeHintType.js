@@ -21,11 +21,9 @@
  */
 
 class EncodeHintType {
-
   constructor() {
-    // do nothing
-  }
 
+  }
 }
 
 /**

@@ -1,217 +1,210 @@
 /*
- * copyright 2010 zxing authors
+ * Copyright 2010 ZXing authors
  *
- * licensed under the apache license, version 2.0 (the "license");
- * you may not use this file except in compliance with the license.
- * you may obtain a copy of the license at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/license-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * unless required by applicable law or agreed to in writing, software
- * distributed under the license is distributed on an "as is" basis,
- * without warranties or conditions of any kind, either express or implied.
- * see the license for the specific language governing permissions and
- * limitations under the license.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
+let NotFoundException = require('../../NotFoundException');
+let ResultPoint = require('../../ResultPoint');
+let BitMatrix = require('../BitMatrix');
 
 /**
  * <p>
- * detects a candidate barcode-like rectangular region within an image. it
+ * Detects a candidate barcode-like rectangular region within an image. It
  * starts around the center of the image, increases the size of the candidate
- * region until it finds a white rectangular region. by keeping track of the
+ * region until it finds a white rectangular region. By keeping track of the
  * last black points it encountered, it determines the corners of the barcode.
  * </p>
  *
- * @author david olivier
+ * @author David Olivier
  */
-
-let notfoundexception = require('../../notfoundexception');
-let resultpoint = require('../../resultpoint');
-let bitmatrix = require('../bitmatrix');
-
-class whiterectangledetector {
-  this.image = undefined;
-  this.height = undefined;
-  this.width = undefined;
-  this.leftinit = undefined;
-  this.rightinit = undefined;
-  this.downinit = undefined;
-  this.upinit = undefined;
-
+class WhiteRectangleDetector {
   /**
-   * @throws notfoundexception if image is too small
+   * @throws NotFoundException if image is too small
    */
-  constructor(image, initsize=-1, x=-1, y=-1) {
-    if ((initsize==-1)&&( x==-1)&&( y==-1)) {
+   constructor(image, initSize, x, y) {
+    if (typeof initSize == null) initSize = -1;
+    if (typeof x == null) x = -1;
+    if (typeof y == null) y = -1;
+    if ((initSize == -1) && (x == -1) && (y==-1)) {
       this.image = image;
-      height = image.getheight();
-      width = image.getwidth();
-      leftinit = (width - whiterectangledetector.init_size) >> 1;
-      rightinit = (width + whiterectangledetector.init_size) >> 1;
-      upinit = (height - whiterectangledetector.init_size) >> 1;
-      downinit = (height + whiterectangledetector.init_size) >> 1;
-      if (upinit < 0 || leftinit < 0 || downinit >= height || rightinit >= width) {
-        throw notfoundexception.getnotfoundinstance();
+      this.height = image.getHeight();
+      this.width = image.getWidth();
+      this.leftInit = (this.width - WhiteRectangleDetector.INIT_SIZE) >> 1;
+      this.rightInit = (this.width + WhiteRectangleDetector.INIT_SIZE) >> 1;
+      this.upInit = (this.height - WhiteRectangleDetector.INIT_SIZE) >> 1;
+      this.downInit = (this.height + WhiteRectangleDetector.INIT_SIZE) >> 1;
+      if (this.upInit < 0 || this.leftInit < 0 || this.downInit >= this.height || this.rightInit >= this.width) {
+        throw NotFoundException.getNotFoundInstance();
       }
     } else {
-      this.image = image;
-      height = image.getheight();
-      width = image.getwidth();
-      let halfsize = initsize >> 1;
-      leftinit = x - halfsize;
-      rightinit = x + halfsize;
-      upinit = y - halfsize;
-      downinit = y + halfsize;
-      if (upinit < 0 || leftinit < 0 || downinit >= height || rightinit >= width) {
-        throw notfoundexception.getnotfoundinstance();
-      }
+    this.image = image;
+    this.height = image.getHeight();
+    width = image.getWidth();
+    var halfsize = initSize >> 1;
+    this.leftInit = x - halfsize;
+    this.rightInit = x + halfsize;
+    this.upInit = y - halfsize;
+    this.downInit = y + halfsize;
+    if (this.upInit < 0 || this.leftInit < 0 || this.downInit >= height || this.rightInit >= this.width) {
+      throw NotFoundException.getNotFoundInstance();
     }
   }
+   }
 
   /**
    * <p>
-   * detects a candidate barcode-like rectangular region within an image. it
+   * Detects a candidate barcode-like rectangular region within an image. It
    * starts around the center of the image, increases the size of the candidate
    * region until it finds a white rectangular region.
    * </p>
    *
-   * @return {@link resultpoint}[] describing the corners of the rectangular
-   *         region. the first and last points are opposed on the diagonal, as
-   *         are the second and third. the first point will be the topmost
-   *         point and the last, the bottommost. the second point will be
+   * @return {@link ResultPoint}[] describing the corners of the rectangular
+   *         region. The first and last points are opposed on the diagonal, as
+   *         are the second and third. The first point will be the topmost
+   *         point and the last, the bottommost. The second point will be
    *         leftmost and the third, the rightmost
-   * @throws notfoundexception if no data matrix code can be found
+   * @throws NotFoundException if no Data Matrix Code can be found
    */
   detect() {
-    let left = leftinit;
-    let right = rightinit;
-    let up = upinit;
-    let down = downinit;
-    let sizeexceeded = false;
-    let ablackpointfoundonborder = true;
-    let atleastoneblackpointfoundonborder = false;
+    var left = this.leftInit;
+    var right = this.rightInit;
+    var up = this.upInit;
+    var down = this.downInit;
+    var sizeExceeded = false;
+    var aBlackPointFoundOnBorder = true;
+    var atLeastOneBlackPointFoundOnBorder = false;
 
-    while (ablackpointfoundonborder) {
-
-      ablackpointfoundonborder = false;
+    while (aBlackPointFoundOnBorder) {
+      aBlackPointFoundOnBorder = false;
 
       // .....
       // .   |
       // .....
-      let rightbordernotwhite = true;
-      while (rightbordernotwhite && right < width) {
-        rightbordernotwhite = this.containsblackpoint(up, down, right, false);
-        if (rightbordernotwhite) {
+      var rightBorderNotWhite = true;
+      while (rightBorderNotWhite && right < width) {
+        rightBorderNotWhite = this.containsBlackPoint(up, down, right, false);
+        if (rightBorderNotWhite) {
           right++;
-          ablackpointfoundonborder = true;
+          aBlackPointFoundOnBorder = true;
         }
       }
 
-      if (right >= width) {
-        sizeexceeded = true;
+      if (right >= this.width) {
+        sizeExceeded = true;
         break;
       }
 
       // .....
       // .   .
       // .___.
-      let bottombordernotwhite = true;
-      while (bottombordernotwhite && down < height) {
-        bottombordernotwhite = this.containsblackpoint(left, right, down, true);
-        if (bottombordernotwhite) {
+      var bottomBorderNotWhite = true;
+      while (bottomBorderNotWhite && down < this.height) {
+        bottomBorderNotWhite = this.containsBlackPoint(left, right, down, true);
+        if (bottomBorderNotWhite) {
           down++;
-          ablackpointfoundonborder = true;
+          aBlackPointFoundOnBorder = true;
         }
       }
 
       if (down >= height) {
-        sizeexceeded = true;
+        sizeExceeded = true;
         break;
       }
 
       // .....
       // |   .
       // .....
-      let leftbordernotwhite:boolean = true;
-      while (leftbordernotwhite && left >= 0) {
-        leftbordernotwhite = this.containsblackpoint(up, down, left, false);
-        if (leftbordernotwhite) {
+      var leftBorderNotWhite = true;
+      while (leftBorderNotWhite && left >= 0) {
+        leftBorderNotWhite = this.containsBlackPoint(up, down, left, false);
+        if (leftBorderNotWhite) {
           left--;
-          ablackpointfoundonborder = true;
+          aBlackPointFoundOnBorder = true;
         }
       }
 
       if (left < 0) {
-        sizeexceeded = true;
+        sizeExceeded = true;
         break;
       }
 
       // .___.
       // .   .
       // .....
-      let topbordernotwhite = true;
-      while (topbordernotwhite && up >= 0) {
-        topbordernotwhite = this.containsblackpoint(left, right, up, true);
-        if (topbordernotwhite) {
+      var topBorderNotWhite = true;
+      while (topBorderNotWhite && up >= 0) {
+        topBorderNotWhite = this.containsBlackPoint(left, right, up, true);
+        if (topBorderNotWhite) {
           up--;
-          ablackpointfoundonborder = true;
+          aBlackPointFoundOnBorder = true;
         }
       }
 
       if (up < 0) {
-        sizeexceeded = true;
+        sizeExceeded = true;
         break;
       }
 
-      if (ablackpointfoundonborder) {
-        atleastoneblackpointfoundonborder = true;
+      if (aBlackPointFoundOnBorder) {
+        atLeastOneBlackPointFoundOnBorder = true;
       }
 
     }
 
-    if (!sizeexceeded && atleastoneblackpointfoundonborder) {
+    if (!sizeExceeded && atLeastOneBlackPointFoundOnBorder) {
+      var maxSize = right - left;
 
-      let maxsize = right - left;
+      var z = null;
+      for (var i = 1; i < maxSize; i++) {
+        z = this.getBlackPointOnSegment(left, down - i, left + i, down);
 
-      let z = null;
-      for (let i = 1; i < maxsize; i++) {
-        z = getblackpointonsegment(left, down - i, left + i, down);
         if (z != null) {
           break;
         }
       }
 
       if (z == null) {
-        throw notfoundexception.getnotfoundinstance();
+        throw NotFoundException.getNotFoundInstance();
       }
 
-      let t = null;
+      var t = null;
       //go down right
-      for (let i4 = 1; i4 < maxsize; i4++) {
-        t = this.getblackpointonsegment(left, up + i4, left + i4, up);
+      for (var i4 = 1; i4 < maxSize; i4++) {
+        t = this.getBlackPointOnSegment(left, up + i4, left + i4, up);
         if (t != null) {
           break;
         }
       }
 
       if (t == null) {
-        throw notfoundexception.getnotfoundinstance();
+        throw NotFoundException.getNotFoundInstance();
       }
 
-      let x = null;
+      var x = null;
       //go down left
-      for (let i5 = 1; i5 < maxsize; i5++) {
-        x = this.getblackpointonsegment(right, up + i5, right - i5, up);
+      for (var i5 = 1; i5 < maxSize; i5++) {
+        x = this.getBlackPointOnSegment(right, up + i5, right - i5, up);
         if (x != null) {
           break;
         }
       }
 
       if (x == null) {
-        throw notfoundexception.getnotfoundinstance();
+        throw NotFoundException.getNotFoundInstance();
       }
 
-      let y = null;
+      var y = null;
       //go up left
       for (i = 1; i < maxSize; i++) {
         y = this.getBlackPointOnSegment(right, down - i, right - i, down);
@@ -231,14 +224,15 @@ class whiterectangledetector {
     }
   }
 
-  getBlackPointOnSegment(aX, aY, bX, bY) {
-    let dist = WhiteRectangleDetector.distanceL2(aX, aY, bX, bY);
-    let xStep = (bX - aX) / dist;
-    let yStep = (bY - aY) / dist;
 
-    for (let i = 0; i < dist; i++) {
-      let x = WhiteRectangleDetector.round(aX + i * xStep);
-      let y = WhiteRectangleDetector.round(aY + i * yStep);
+  getBlackPointOnSegment(aX, aY, bX, bY) {
+    var dist = WhiteRectangleDetector.distanceL2(aX, aY, bX, bY);
+    var xStep = (bX - aX) / dist;
+    var yStep = (bY - aY) / dist;
+
+    for (var i = 0; i < dist; i++) {
+      var x = WhiteRectangleDetector.round(aX + i * xStep);
+      var y = WhiteRectangleDetector.round(aY + i * yStep);
       if (this.image._get(x, y)) {
         return new ResultPoint(x, y);
       }
@@ -260,6 +254,7 @@ class whiterectangledetector {
    *         leftmost and the third, the rightmost
    */
   centerEdges(y, z, x, t) {
+
     //
     //       t            t
     //  z                      x
@@ -267,27 +262,28 @@ class whiterectangledetector {
     //   y                    y
     //
 
-    let yi = y.getX();
-    let yj = y.getY();
-    let zi = z.getX();
-    let zj = z.getY();
-    let xi = x.getX();
-    let xj = x.getY();
-    let ti = t.getX();
-    let tj = t.getY();
+    var yi = y.getX();
+    var yj = y.getY();
+    var zi = z.getX();
+    var zj = z.getY();
+    var xi = x.getX();
+    var xj = x.getY();
+    var ti = t.getX();
+    var tj = t.getY();
+    let CORR = WhiteRectangleDetector.CORR;
 
-    if (yi < width / 2) {
+    if (yi < this.width / 2) {
       return [
-        new ResultPoint(ti - CORR, tj + CORR),
-        new ResultPoint(zi + CORR, zj + CORR),
-        new ResultPoint(xi - CORR, xj - CORR),
-        new ResultPoint(yi + CORR, yj - CORR)];
+          new ResultPoint(ti - CORR, tj + CORR),
+          new ResultPoint(zi + CORR, zj + CORR),
+          new ResultPoint(xi - CORR, xj - CORR),
+          new ResultPoint(yi + CORR, yj - CORR)];
     } else {
       return [
-        new ResultPoint(ti + CORR, tj + CORR),
-        new ResultPoint(zi + CORR, zj - CORR),
-        new ResultPoint(xi - CORR, xj + CORR),
-        new ResultPoint(yi - CORR, yj - CORR)];
+          new ResultPoint(ti + CORR, tj + CORR),
+          new ResultPoint(zi + CORR, zj - CORR),
+          new ResultPoint(xi - CORR, xj + CORR),
+          new ResultPoint(yi - CORR, yj - CORR)];
     }
   }
 
@@ -301,15 +297,14 @@ class whiterectangledetector {
    * @return true if a black point has been found, else false.
    */
   containsBlackPoint(a, b, fixed, horizontal) {
-
     if (horizontal) {
-      for (let x = a; x <= b; x++) {
+      for (var x = a; x <= b; x++) {
         if (this.image._get(x, fixed)) {
           return true;
         }
       }
     } else {
-      for (let y = a; y <= b; y++) {
+      for (var y = a; y <= b; y++) {
         if (this.image._get(fixed, y)) {
           return true;
         }
@@ -318,7 +313,6 @@ class whiterectangledetector {
 
     return false;
   }
-
 }
 
 WhiteRectangleDetector.INIT_SIZE = 30;
@@ -329,13 +323,13 @@ WhiteRectangleDetector.CORR = 1;
  * argument to the nearest int, where x.5 rounds up.
  */
 WhiteRectangleDetector.round = function(d) {
-  return parseInt(d + 0.5);
+  return parseInt((d + 0.5));
 };
 
 WhiteRectangleDetector.distanceL2 = function(aX, aY, bX, bY) {
-  let xDiff = aX - bX;
-  let yDiff = aY - bY;
+  var xDiff = aX - bX;
+  var yDiff = aY - bY;
   return WhiteRectangleDetector.round(Math.sqrt(xDiff * xDiff + yDiff * yDiff));
 };
 
- module.exports = WhiteRectangleDetector;
+module.exports = WhiteRectangleDetector;

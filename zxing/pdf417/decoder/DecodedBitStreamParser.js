@@ -21,7 +21,7 @@
  */
 
 let ReaderException = require('../../ReaderException');
-let DecoderResult = require('../../DecoderResult');
+let DecoderResult = require('../../common/DecoderResult');
 
 class DecodedBitStreamParser {
 
@@ -646,4 +646,4 @@ DecodedBitStreamParser.add = function(value1, value2) {
   return result;
 };
 
-module.exports = DecoedBitStreamParser;
+module.exports = DecodedBitStreamParser;

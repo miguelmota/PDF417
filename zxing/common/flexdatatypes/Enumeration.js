@@ -13,29 +13,27 @@
  * limitations under the License.
  */
 
-function Enumeration() {
-    var _arr;
-
-    this.isEmpty = function() {
-      return this.getSize() == 0;
-    }.bind(this);
-
-    this.getSize = function() {
-      return this._arr.length;
-    }.bind(this);
-
-    this.Enumeration = function(arr) {
-      this._arr = arr;
-    }.bind(this);
-
-    this.hasMoreElement = function() {
-      return !this.isEmpty();
-    }.bind(this);
-
-    this.nextElement = function() {
-      return this._arr.shift();
-    }.bind(this);
-
+class Enumeration {
+  constructor(arr) {
+    this._arr = arr;
   }
 
-  module.exports = Enumeration;
+  isEmpty() {
+    return this.getSize() === 0;
+  }
+
+  getSize() {
+    return this._arr.length;
+  }
+
+  hasMoreElement() {
+    return !this.isEmpty();
+  }
+
+  nextElement() {
+    return this._arr.shift();
+  }
+
+}
+
+module.exports = Enumeration;

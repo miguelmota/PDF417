@@ -23,10 +23,7 @@
 let StringBuilder = require('./common/flexdatatypes/StringBuilder');
 
 class ResultPoint {
-  this.x = undefined;
-  this.y = undefined;
-
-  function constructor(x, y) {
+  constructor(x, y) {
     this.x = x;
     this.y = y;
   }

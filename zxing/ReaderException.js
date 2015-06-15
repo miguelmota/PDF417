@@ -31,12 +31,10 @@ class ReaderException extends Error {
   // have altered this class to be as lightweight as possible, by ignoring the exception string, and
   // by disabling the generation of stack traces, which is especially time consuming. These are just
   // temporary measures, pending the big cleanup.
-
-
   constructor(message) {
-    this.message = message || '';
-    super(message);
+    super(message||'');
   }
+
 
   // Prevent stack traces from being taken
   // srowen says: huh, my IDE is saying this is not an override. native methods can't be overridden?
@@ -48,7 +46,6 @@ class ReaderException extends Error {
 }
 
 ReaderException.instance = new ReaderException();
-
 
 ReaderException.getInstance = function() {
   return ReaderException.instance;

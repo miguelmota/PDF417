@@ -25,14 +25,12 @@
 let BinaryBitmap = require('../../BinaryBitmap');
 let ReaderException = require('../../ReaderException');
 let ResultPoint = require('../../ResultPoint');
-let BitMatrix = require('../../common.BitMatrix');
-let Detector = require('../../common.DetectorResult');
-let GridSampler = require('../../common.GridSampler');
-let HashTable = require('../../common.flexdatatypes.HashTable');
+let BitMatrix = require('../../common/BitMatrix');
+let DetectorResult = require('../../common/DetectorResult');
+let GridSampler = require('../../common/GridSampler');
+let HashTable = require('../../common/flexdatatypes/HashTable');
 
 class Detector {
-  this.image = undefined;
-
   constructor(image) {
     this.image = image;
   }
@@ -55,9 +53,12 @@ class Detector {
    * @return {@link DetectorResult} encapsulating results of detecting a PDF417 Code
    * @throws ReaderException if no PDF417 Code can be found
    */
-  detect(hints=null) {
+  detect(hints) {
+    if (!hints) hints = null;
     // Fetch the 1 bit matrix once up front.
     let matrix = this.image.getBlackMatrix();
+
+    console.log('yomatrix', matrix);
 
     // Try to find the vertices assuming the image is upright.
     let vertices = Detector.findVertices(matrix);
@@ -139,7 +140,7 @@ Detector.findVertices = function(matrix) {
 
   let loc = null;
   // Top Left
-  for (let i:int = 0; i < height; i++) {
+  for (let i = 0; i < height; i++) {
     loc = Detector.findGuardPattern(matrix, 0, i, width, false, Detector.START_PATTERN);
     if (loc != null) {
       result[0] = new ResultPoint(loc[0], i);
@@ -164,7 +165,7 @@ Detector.findVertices = function(matrix) {
   // Top right
   if (found) { // Found the Bottom Left vertex
     found = false;
-    for (let i3:int = 0; i3 < height; i3++) {
+    for (let i3 = 0; i3 < height; i3++) {
       loc = findGuardPattern(matrix, 0, i3, width, false, STOP_PATTERN);
       if (loc != null) {
         result[2] = new ResultPoint(loc[1], i3);

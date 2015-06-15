@@ -25,19 +25,13 @@ let IllegalArgumentException = require('./common/flexdatatypes/IllegalArgumentEx
 let Enumeration = require('./common/flexdatatypes/Enumeration');
 
 class Result {
-  this.text = undefined;
-  this.rawBytes = undefined;
-  this.resultPoints = undefined;
-  this.format = undefined;
-  this.resultMetadata = undefined;
-  this.timestamp = undefined;
-
-  function constructor(text, rawBytes, resultPoints, format, timestamp=0) {
+  constructor(text, rawBytes, resultPoints, format, timestamp) {
+    timestamp = timestamp || 0;
     if (text == null && rawBytes == null) {
       throw new IllegalArgumentException("Result : Text and bytes are both null");
     }
 
-    if (timestamp == 0) {
+    if (timestamp === 0) {
       timestamp = Math.round((new Date()).getTime()/1000);
     }
 
