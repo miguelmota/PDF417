@@ -4,4 +4,4 @@
 
 # License
 
--
+Copyright 2009 ZXing authors
