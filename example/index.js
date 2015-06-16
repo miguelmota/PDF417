@@ -12,9 +12,9 @@ var BarcodeFormat = require('../zxing/BarcodeFormat');
 
 var getPixels = require('get-pixels');
 
-getPixels('pdf417-1.png', function(err, pixels) {
+getPixels(__dirname + '/pdf417-1.png', function(err, pixels) {
   if (err) {
-    console.error(error);
+    console.error(err);
     return false;
   }
   var width = pixels.shape[0];

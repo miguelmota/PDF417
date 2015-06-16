@@ -38,9 +38,7 @@ class HybridBinarizer extends GlobalHistogramBinarizer {
   }
 
   getBlackMatrix() {
-    console.log('matt', this.matrix);
     this.binarizeEntireImage();
-    console.log('matt2', this.matrix);
     return this.matrix;
   }
 
@@ -54,7 +52,6 @@ class HybridBinarizer extends GlobalHistogramBinarizer {
   binarizeEntireImage() {
     if (this.matrix == null) {
       var source = this.getLuminanceSource();
-      console.log('sause');
       if (source.getWidth() >= HybridBinarizer.MINIMUM_DIMENSION && source.getHeight() >= HybridBinarizer.MINIMUM_DIMENSION) {
         var luminances = source.getMatrix();
         var width = source.getWidth();

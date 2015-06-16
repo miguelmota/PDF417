@@ -69,7 +69,6 @@ class PDF417Reader {
       points = PDF417Reader.NO_POINTS;
     } else {
       var detectorResult = new Detector(image).detect();
-    console.log('foob')
       decoderResult = decoder.decode(detectorResult.getBits());
       points = detectorResult.getPoints();
     }

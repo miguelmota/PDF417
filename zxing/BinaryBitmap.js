@@ -75,11 +75,8 @@ class BinaryBitmap {
     //    1D Reader finds a barcode before the 2D Readers run.
     // 2. This work will only be done once even if the caller installs multiple 2D Readers.
 
-    console.log('hello');
     if (this.matrix == null) {
-    console.log('hello2 - hyb');
       this.matrix = this.binarizer.getBlackMatrix();
-    console.log('hello3');
     }
     return this.matrix;
   }

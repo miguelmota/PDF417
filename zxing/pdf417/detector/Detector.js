@@ -31,36 +31,7 @@ let GridSampler = require('../../common/GridSampler');
 let HashTable = require('../../common/flexdatatypes/HashTable');
 
 class Detector {
-  constructor(image) {
-    this.image = image;
-  }
-
-  /**
-   * <p>Detects a PDF417 Code in an image, simply.</p>
-   *
-   * @return {@link DetectorResult} encapsulating results of detecting a PDF417 Code
-   * @throws ReaderException if no QR Code can be found
-   */
-  /*
-     public function detect():DetectorResult {
-     return detect(null);
-     }*/
-
-  /**
-   * <p>Detects a PDF417 Code in an image. Only checks 0 and 180 degree rotations.</p>
-   *
-   * @param hints optional hints to detector
-   * @return {@link DetectorResult} encapsulating results of detecting a PDF417 Code
-   * @throws ReaderException if no PDF417 Code can be found
-   */
-  detect(hints) {
-    if (!hints) hints = null;
-    // Fetch the 1 bit matrix once up front.
-    let matrix = this.image.getBlackMatrix();
-
-    console.log('yomatrix', matrix);
-
-    // Try to find the vertices assuming the image is upright.
+  // Try to find the vertices assuming the image is upright.
     let vertices = Detector.findVertices(matrix);
     if (vertices == null) {
       // Maybe the image is rotated 180 degrees?

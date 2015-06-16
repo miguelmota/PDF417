@@ -145,7 +145,6 @@ class MultiFormatReader extends Reader {
 
   decodeInternal(image) {
     let size = this.readers.Count;
-    console.log('hreaders', this.readers)
     for (let i = 0; i < size; i++) {
       let reader = this.readers.getObjectByIndex(i);
       try {

@@ -67,7 +67,6 @@ class Binarizer {
    * @return The 2D array of bits for the image (true means black).
    */
   getBlackMatrix() {
-    console.log('fooff')
     return null;
   }
 
