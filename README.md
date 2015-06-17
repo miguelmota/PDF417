@@ -1,12 +1,20 @@
 # PDF417
 
-A blazing fast and precise pdf417 barcode scanner written in JavaScript.
+A lightweight and blazing fast pdf417 barcode scanner in JavaScript.
+
+## TODO
+
+Possible libraries to get ideas from (or use):
+
+ - [https://github.com/zxing/zxing](ZXing)
+ - [https://github.com/eduardolundgren/tracking.js](Tracking.js)
+ - [https://github.com/serratus/quaggaJS](quaggaJS)
+
 
 ## Basic Usage
 
 Simply call `scan()` on image data (PNG, JPEG, GIF) and get the outputed data returned as an object.
 
-- `scan()`
 
 ```javascript
 import pdf417 from 'pdf417'
